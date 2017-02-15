@@ -20,7 +20,7 @@ function insertAfter(newElement,targetElement){
 	}
 }
 
- function addClass(elemnt,value){
+ function addClass(element,value){
  	if(!element.className){
  		element.className=value;
  	}else{
@@ -211,99 +211,38 @@ function prepareGallery() {
 	}
 }
 
-function stripeTables() {
-
-  //if (!document.getElementsByTagName) return false;
-
-  var tables = document.getElementsByTagName("table");
-
-  for (var i=0; i<tables.length; i++) {
-
-    var odd = false;
-
-    var rows = tables[i].getElementsByTagName("tr");
-
-    for (var j=0; j<rows.length; j++) {
-
-      if (odd == true) {
-
-        addClass(rows[j],"odd");
-
-        odd = false;
-
-      } else {
-
-        odd = true;
-
-      }
-
-    }
-
-  }
-
-}
-
-
-
-function highlightRows() {
-
-  if(!document.getElementsByTagName) return false;
-
-  var rows = document.getElementsByTagName("tr");
-
-  for (var i=0; i<rows.length; i++) {
-
-    rows[i].oldClassName = rows[i].className
-
-    rows[i].onmouseover = function() {
-
-      addClass(this,"highlight");
-
-    }
-
-    rows[i].onmouseout = function() {
-
-      this.className = this.oldClassName
-
-    }
-
-  }
-
-}
-/*
 function stripeTables(){
 	if(!document.getElementsByTagName) return false;
 	var tables=document.getElementsByTagName("table");
 	for(var i=0;i<tables.length;i++){
 		var odd=false;
 		var rows=tables[i].getElementsByTagName("tr");
-		for(var j=0;j<rows.length){
+		for(var j=0;j<rows.length;j++){
 			if(odd==true){
 				addClass(rows[j],"odd")
 				odd=false;
-			}else{
+			}else{                	
 	            odd=true;
 			}
 		}
 	}
 }
 function highlightRows(){
-	alert("ok")
 	if(!document.getElementsByTagName) return false;
 	var tables=document.getElementsByTagName("table");
 	for (var i=0;i<tables.length;i++)
 		var rows=tables[i].getElementsByTagName("tr");
 	    for(var j=0;j<rows.length;j++){
 	    	rows[j].oddClassName=rows[j].className;
-	    	rows[j].onmouseover=function(){
-	    		addClass(this,"highlight")
+	    	rows[j].onmouseover = function () {
+	    	    addClass(this, "highlight")
 	    	}
 	    	rows[j].onmouseout=function(){
 	    		this.className=this.oddClassName
 	    	}
 	    }
 }
-*/
+
 
 function displayAbbreviations(){
 	if(!document.getElementsByTagName||!document.createElement||!document.createTextNode) return false;
@@ -455,19 +394,27 @@ function submitFormWithAjax(whichform,thetarget){
 		dataParts[i]=element.name + "=" + encodeURIComponent(element.value);
 	}
 	var data=dataParts.join('&');
-	request.open('POST',whichform.getAttribute("action"),true);
-	request.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+	request.open("GET",whichform.getAttribute("action"),true);
+	//request.setRequestHeader("Content-type","application/x-www-form-urlencoded")
 	request.onreadystatechange=function(){
 		if(request.readyState==4){
 			if(request.status==200||request.status==0){
-				var matchs=request.responseText.match(/<article>([\s\S]+)<\/article>/);
-				thetarget.innerHTML ='<p> Opps </p>';
+				var matches=request.responseText.match(/<article>([\s\S]+)<\/article>/);
+				
+				if(matches.length>0){					
+					thetarget.innerHTML=matches[1];
+				}else{
+					thetarget.innerHTML ='<p> Opps </p>';
+				}
 			}else{
-				thetarget.innerHTML='<p>' +request.statusText+'</p>';
+				thetarget.innerHTML='<p>' +request.statusText+'</p>';//采用post会报405error: method not allowed,但是如果用
+				                                            //get就不会有错误，可能的原因是请求的文件是.html客户端脚本，
+				                                            //如果要使用post,需要请求.asp这种服务器脚本
 			}
 		}
 	}
-	request.send(data)
+	//request.send(data)
+	request.send();
 	return true;
 }
 
@@ -476,7 +423,7 @@ function submitFormWithAjax(whichform,thetarget){
  addLoadEvent(prepareInternalnav);
  addLoadEvent(preparePlaceholder);
  addLoadEvent(prepareGallery);
- //addLoadEvent(stripeTables);
+ addLoadEvent(stripeTables);
  addLoadEvent(highlightRows);
  addLoadEvent(displayAbbreviations);
  addLoadEvent(focusLabels);
