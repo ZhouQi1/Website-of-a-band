@@ -86,7 +86,9 @@ function prepareSlideshow(){
 	var intro=document.getElementById("intro");
 	var slideshow=document.createElement("div");
 	slideshow.setAttribute("id","slideshow");
-	var frame=document.createElement("frame");
+	//var frame=document.createElement("frame");  //如果用frame标签在layout样式表里有个问题,left:0;border:none
+	                                           //还是对不齐
+	var frame=document.createElement("img");  //改成img标签即可
 	frame.setAttribute("src","images/frame.gif")
 	frame.setAttribute("alt","");
 	frame.setAttribute("id","frame");
@@ -230,7 +232,7 @@ function stripeTables(){
 function highlightRows(){
 	if(!document.getElementsByTagName) return false;
 	var tables=document.getElementsByTagName("table");
-	for (var i=0;i<tables.length;i++)
+	for (var i=0;i<tables.length;i++){
 		var rows=tables[i].getElementsByTagName("tr");
 	    for(var j=0;j<rows.length;j++){
 	    	rows[j].oddClassName=rows[j].className;
@@ -241,6 +243,8 @@ function highlightRows(){
 	    		this.className=this.oddClassName
 	    	}
 	    }
+	}
+		
 }
 
 
